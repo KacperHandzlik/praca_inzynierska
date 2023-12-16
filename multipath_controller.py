@@ -44,7 +44,6 @@ class ProjectController(app_manager.RyuApp):
         self.group_ids = []
         self.adjacency = defaultdict(dict)
         self.bandwidths = defaultdict(lambda: defaultdict(lambda: DEFAULT_BW))
-        #self.bandwidths = {}
         # ... existing initializations ...
         self.flow_recalculation_interval = 20  # interval in seconds for recalculating flows
         self.one_two_three = 1
@@ -236,13 +235,6 @@ class ProjectController(app_manager.RyuApp):
                     self.add_flow(dp, 1, match_arp, actions)
 
                 elif len(out_ports) == 1:
-                    # print("dupa1")
-                    # if self.one_two_three == 1:
-                    #     self.one_two_three = 2
-                    # elif self.one_two_three == 2: 
-                    #     self.one_two_three = 3
-                    # else:
-                    #     self.one_two_three = 1
                     actions = [ofp_parser.OFPActionOutput(out_ports[0][0])]
 
                     self.add_flow(dp, 32768, match_ip, actions)
@@ -282,7 +274,6 @@ class ProjectController(app_manager.RyuApp):
     @set_ev_cls(ofp_event.EventOFPPortDescStatsReply, MAIN_DISPATCHER)
     def port_desc_stats_reply_handler(self, ev):
         switch = ev.msg.datapath
-        print('dupa1')
         for p in ev.msg.body:
             if switch.id in [1,2,3,4] and p.port_no == 5:
                 self.bandwidths[switch.id][p.port_no] = 2000
@@ -324,7 +315,6 @@ class ProjectController(app_manager.RyuApp):
         out_port = ofproto.OFPP_FLOOD
 
         if arp_pkt:
-            print("dupa")
             print(self.hosts)
             # print(dpid, pkt)
             src_ip = arp_pkt.src_ip
